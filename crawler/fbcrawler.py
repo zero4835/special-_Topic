@@ -36,7 +36,7 @@ def handleSeeMore(driver):
         pass
 
 def writefile(postpage):
-    file = open("C:\\Users\\ROUSER6\\Desktop\\ana\\crawler\\final.txt", mode = "a", encoding = "utf-8")
+    file = open("C:/Users/ROUSER6/Desktop/topic/crawler/final.txt", mode = "a", encoding = "utf-8")
     for i in range(postpage):
         file.write("this is post No: ")
         file.write(str(i+1)) #貼文編號
