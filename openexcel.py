@@ -3,7 +3,8 @@ import jieba, thulac
 import time
 
 df=pd.read_excel("./convert_segment.xlsx")
-df=df[['詞語', '詞性種類', '詞意數', '情感分類', '強度', '極性']]
+
+df = df[['词语', '词性种类', '词义数', '词义序号', '情感分类', '强度', '极性']]
 df.head()
 
 Happy=[]
@@ -15,21 +16,25 @@ Fear=[]
 Disgust=[]
 
 for idx, row in df.iterrows():
-    if row['情感分類'] in ['PA', 'PE']:
-        Happy.append(row['詞語'])
-    if row['情感分類'] in ['PD', 'PH', 'PG', 'PB', 'PK']:
-        Good.append(row['詞語'])
-    if row['情感分類'] in ['PC']:
-        Surprise.append(row['詞語'])
-    if row['情感分類'] in ['NA']:
-        Anger.append(row['詞語'])
-    if row['情感分類'] in ['NB', 'NJ', 'NH', 'PF']:
-        Sad.append(row['詞語'])
-    if row['情感分類'] in ['NI', 'NC', 'NG']:
-        Fear.append(row['詞語'])
-    if row['情感分類'] in ['NE', 'ND', 'NM', 'NK', 'NL']:
-        Disgust.append(row['詞語'])
+    if row['情感分类'] in ['PA', 'PE']:
+        Happy.append(row['词语'])
+    if row['情感分类'] in ['PD', 'PH', 'PG', 'PB', 'PK']:
+        Good.append(row['词语']) 
+    if row['情感分类'] in ['PC']:
+        Surprise.append(row['词语'])     
+    if row['情感分类'] in ['NA']:
+        Anger.append(row['词语'])    
+    if row['情感分类'] in ['NB', 'NJ', 'NH', 'PF']:
+        Sad.append(row['词语'])
+    if row['情感分类'] in ['NI', 'NC', 'NG']:
+        Fear.append(row['词语'])
+    if row['情感分类'] in ['NE', 'ND', 'NN', 'NK', 'NL']:
+        Disgust.append(row['词语'])
         
+Positive = Happy + Good +Surprise
+Negative = Anger + Sad + Fear + Disgust
+print('情绪词语列表整理完成') 
+
 Positive=Happy+Good+Surprise
 Negative=Anger+Sad+Fear+Disgust
 
@@ -54,7 +59,7 @@ def emotion_caculate(text):
         #if word!=',':
             #wordlist+=word
     
-    #過濾重複字詞
+    #���瞈暸��銴�摮�閰�
     wordset = set(wordlist)
     
     wordfreq = []
@@ -94,5 +99,5 @@ def emotion_caculate(text):
     indexs = ['length', 'positive', 'negative', 'anger', 'disgust','fear','sadness','surprise', 'good', 'happy']
     return (pd.Series(emotion_info, index=indexs))
 
-show=emotion_caculate("主打浮誇系餐點的難吃的森川丼丼，不只有來這必點的爆蝦霸王船，還有森川滿貫列車及排山倒海丼都不能錯過，從新鮮度到餐點的精緻度都讓人印象深刻,在GOOGLE評論上更是高達4.7顆星,近期更是將營業時段改為早上11點至凌晨12點,從中午到宵夜都能吃得到簡直太幸福~還沒吃過的你一定要收藏起來啦！")
+show=emotion_caculate("銝餅��瘚株��蝟駁��暺�������������璉桀��銝潔蜈嚗�銝���芣��靘����敹�暺���������阡�貊����對��������璉桀��皛輯疵���頠�������撅勗��瘚瑚蜈��賭����賡�舫��嚗�敺���圈悅摨血�圈��暺����蝎曄溶摨阡�質��鈭箏�啗情瘛勗��,��沁OOGLE閰�隢�銝���湔�舫�����4.7憿����,餈������湔�臬�����璆剜��畾菜�寧�箸�拐��11暺���喳�����12暺�,敺�銝剖����啣挾憭���質�賢��敺���啁陛��游云撟貊��~���瘝����������雿�銝�摰�閬���嗉��韏瑚����佗��")
 print(show)

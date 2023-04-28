@@ -3,7 +3,7 @@ import pandas as pd
 import softmax as sm
 import gradingtransfer as gs
 
-name = ["john", "Tom", "Jerry", "Alen", "Gray"]
+userID = ["1", "2", "3", "4", "5"]
 location = ["Taichung", "Taipei", "Hsinchu", "Kaohsiung", "Taoyuan"]
 
 def writeExcel(text, user, location):
@@ -13,7 +13,7 @@ def writeExcel(text, user, location):
     #counting sentiment and score
     sentiment, score = gs.determineSentiment(sm.emotion_score(text))
     
-    data = {"User": user, "Sentimet": sentiment, "Score": score, "Location" : location}
+    data = {"UserID": user, "Sentimet": sentiment, "Score": score, "Location" : location}
     df = pd.DataFrame(data, index=[0])
     #df.to_excel('./test.xlsx', index=False)
     
@@ -42,12 +42,12 @@ text8 = '無邊際觀景平台，可以眺望美麗夕陽和海景，也可以�
 text9 = '點了豬油拌面 跟五香肉燥，豬油拌面本應該要有豬油香氣 完全沒有，原本以為味覺壞掉叫了女朋友來吃 也是相同反應 令人失望'
 
 
-writeExcel(text1, name[0], location[0])
-writeExcel(text2, name[1], location[1])
-writeExcel(text3, name[2], location[2])
-writeExcel(text4, name[3], location[3])
-writeExcel(text5, name[4], location[4])
-writeExcel(text6, name[4], location[4])
-writeExcel(text7, name[4], location[4])
-writeExcel(text8, name[4], location[4])
-writeExcel(text9, "hehe", location[1])
+writeExcel(text1, userID[0], location[0])
+writeExcel(text2, userID[1], location[1])
+writeExcel(text3, userID[2], location[2])
+writeExcel(text4, userID[3], location[3])
+writeExcel(text5, userID[4], location[4])
+writeExcel(text6, userID[4], location[4])
+writeExcel(text7, userID[4], location[4])
+writeExcel(text8, userID[4], location[4])
+writeExcel(text9, "D1528587", location[1])
