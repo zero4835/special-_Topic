@@ -6,6 +6,7 @@ import requests
 from time import sleep
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+import pandas as pd
 
 #login facebook
 def login(email, password):
@@ -35,9 +36,32 @@ def handleSeeMore(driver):
     else:
         pass
 
+def writeExcel(id, userinfo, postinfo, tag):
+    #load excel
+    df = pd.read_csv('C:/Users/ROUSER6/Desktop/topic/crawler/excel/data.csv')
+    
+    
+    data = {'UserID' : id, 'UserInfo': userinfo, 'PostInfo':postinfo, 'tag':tag}
+    df = pd.DataFrame([data], index=[0])
+    
+    try:
+        old_data = pd.read_excel('C:/Users/ROUSER6/Desktop/topic/crawler/excel/data.xlsx')
+    except FileNotFoundError:
+        #若沒有建立新資料
+        old_data = pd.DataFrame()
+
+    # merge new and old data into excel
+    merged_data = pd.concat([old_data, df], ignore_index=True)
+ 
+    #write back excel
+    merged_data.to_excel('C:/Users/ROUSER6/Desktop/topic/crawler/excel/data.xlsx', index=False)
+
+
+
 def writefile(postpage):
     file = open("C:/Users/ROUSER6/Desktop/topic/crawler/final.txt", mode = "a", encoding = "utf-8")
     for i in range(postpage):
+        tag=""
         file.write("this is post No: ")
         file.write(str(i+1)) #貼文編號
         file.write("\n")
@@ -54,8 +78,11 @@ def writefile(postpage):
         for j in range(100,len(hashtag[i])):
             file.write(str(hashtag[i][j]))  # hashtags
             file.write("\n")
+            tag += hashtag[i][j]+'\n'
         file.write("-"*50)
         file.write("\n") 
+        
+        writeExcel(str(i+1), locations[i], p[i], tag)
     file.close
 
 
@@ -94,7 +121,7 @@ driver.get(url2)
 time.sleep(5)
 
 # 往下滑，讓Facebook載入文章內容
-for x in range(5):
+for x in range(3):
     driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
     print("scroll")
     time.sleep(5) #要設時間給fb緩衝載入資料
@@ -146,7 +173,7 @@ for title in titles:
                 h=0
                 str2='' #存放hashtag 的字串
                 for i in range(loc + 1, len(str3)): 
-                    if(str3[i]=='#'or str3[i]=='\n' or str3[i]==' '): # 檢測是否讀取到下一個 # 或換行 或空格
+                    if(str3[i]=='#' or str3[i]=='\n' or str3[i]==' '): # 檢測是否讀取到下一個 # 或換行 或空格
                         
                         hashtag[postpage].append(str2) #將字串存進陣列中
                         h=h+1
