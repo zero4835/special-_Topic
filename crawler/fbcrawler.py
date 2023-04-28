@@ -62,8 +62,8 @@ def writefile(postpage):
 # user info and crawler target
 url = "https://www.facebook.com/"
 url2="https://www.facebook.com/hashtag/%E7%A7%8B%E8%99%B9%E8%B0%B7"
-email = "cyclone4835@yahoo.com.tw" 
-password = "Zjasxwww6633"
+email = "" 
+password = ""
 
 
 
