@@ -7,13 +7,61 @@ from time import sleep
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 
+#login facebook
+def login(email, password):
+    driver.find_element("id", "email").send_keys(email)
+    driver.find_element("id", "pass").send_keys(password)
+    driver.find_element("name", "login").click()
 
-##兩個txt檔都先幫你清空了
+#Handle see more
+def handleSeeMore(driver):
+    readMore = driver.find_elements(By.XPATH, "//div[contains(@class,'x1i10hfl xjbqb8w x6umtig x1b1mbwd xaqea5y xav7gou x9f619 x1ypdohk xt0psk2 xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz xt0b8zv xzsf02u x1s688f') and contains(text(), '顯示更多')]")
+    if len(readMore) > 0:    
+        count = 0
+        for i in readMore:
+            action=ActionChains(driver)
+            try:
+                action.move_to_element(i).click().perform()
+                count += 1
+            except:
+                try:
+                    driver.execute_script("arguments[0].click();", i)
+                    count += 1
+                except:
+                    continue
+        if len(readMore) - count > 0:
+            print('readMore issue:', len(readMore) - count)
+        time.sleep(1)
+    else:
+        pass
+
+def writefile(postpage):
+    file = open("C:\\Users\\ROUSER6\\Desktop\\ana\\crawler\\final.txt", mode = "a", encoding = "utf-8")
+    for i in range(postpage):
+        file.write("this is post No: ")
+        file.write(str(i+1)) #貼文編號
+        file.write("\n")
+        file.write("\n")
+        file.write(locations[i])#發文者及打卡地點
+        file.write("\n")
+        file.write("\n")
+        file.write(p[i])  #貼文內容
+        print(p[i])
+        file.write("\n")
+        file.write("\n")
+        file.write("this are hashtag: ")
+        file.write("\n")
+        for j in range(100,len(hashtag[i])):
+            file.write(str(hashtag[i][j]))  # hashtags
+            file.write("\n")
+        file.write("-"*50)
+        file.write("\n") 
+    file.close
 
 
-# 你的資訊
+# user info and crawler target
 url = "https://www.facebook.com/"
-url2="https://www.facebook.com/emuse.com.tw"
+url2="https://www.facebook.com/hashtag/%E7%A7%8B%E8%99%B9%E8%B0%B7"
 email = "cyclone4835@yahoo.com.tw" 
 password = "Zjasxwww6633"
 
@@ -36,12 +84,7 @@ driver.maximize_window()
 # 進入Facebook登入畫面
 driver.get(url)
 
-# 填入帳號密碼，並送出
-driver.find_element("id", "email").send_keys(email)
-driver.find_element("id", "pass").send_keys(password)
-driver.find_element("name", "login").click()
-
-
+login(email, password)
 
 time.sleep(5)
 
@@ -50,37 +93,12 @@ driver.get(url2)
 
 time.sleep(5)
 
-
-
-#處裡顯示更多   
-def openSeeMore(driver):
-    readMore = driver.find_elements(By.XPATH, "//div[contains(@class,'x1i10hfl xjbqb8w x6umtig x1b1mbwd xaqea5y xav7gou x9f619 x1ypdohk xt0psk2 xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz xt0b8zv xzsf02u x1s688f') and contains(text(), '顯示更多')]")
-    if len(readMore) > 0:    
-        count = 0
-        for i in readMore:
-            action=ActionChains(driver)
-            try:
-                action.move_to_element(i).click().perform()
-                count += 1
-            except:
-                try:
-                    driver.execute_script("arguments[0].click();", i)
-                    count += 1
-                except:
-                    continue
-        if len(readMore) - count > 0:
-            print('readMore issue:', len(readMore) - count)
-        time.sleep(1)
-    else:
-        pass
-
-
-# 往下滑3次，讓Facebook載入文章內容
-for x in range(3):
+# 往下滑，讓Facebook載入文章內容
+for x in range(5):
     driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
     print("scroll")
     time.sleep(5) #要設時間給fb緩衝載入資料
-    openSeeMore(driver)
+    handleSeeMore(driver)
 
 
 root = BeautifulSoup(driver.page_source, "html.parser")
@@ -95,14 +113,7 @@ infos=root.find_all(
     class_="x1heor9g x1qlqyl8 x1pd3egz x1a2a7pz x1gslohp x1yc453h"
 )
 
-with open("location.txt", 'r+') as f: #清除發文者及打卡地點txt檔
-    f.truncate(0)
-
-
-with open("posts.txt", 'r+') as f: #清除貼文txt檔
-    f.truncate(0)
-
-with open("final.txt", 'r+') as f: #清final txt檔
+with open("final.txt", 'w') as f: #清final txt檔
     f.truncate(0)
 
 #爬出發文者及打卡地點 然後寫入txt
@@ -144,31 +155,10 @@ for title in titles:
                     else:
                         str2= str2+str3[i]
         p.append(str1)
- 
     postpage+=1
 
+writefile(postpage)
 
-file = open("C:\\Users\\ROUSER6\\Desktop\\ana\\crawler\\final.txt", mode = "a", encoding = "utf-8")
-for i in range(postpage):
-    file.write("this is post No: ")
-    file.write(str(i+1)) #貼文編號
-    file.write("\n")
-    file.write("\n")
-    file.write(locations[i])#發文者及打卡地點
-    file.write("\n")
-    file.write("\n")
-    file.write(p[i])  #貼文內容
-    print(p[i])
-    file.write("\n")
-    file.write("\n")
-    file.write("this are hashtag: ")
-    file.write("\n")
-    for j in range(100,len(hashtag[i])):
-        file.write(str(hashtag[i][j]))  # hashtags
-        file.write("\n")
-    file.write("-"*50)
-    file.write("\n") 
-file.close
 time.sleep(5)
 driver.quit()
 
